@@ -1,1 +1,50 @@
 @import "tailwindcss";
+
+@theme inline {
+  --color-background: #FBF8F3;
+  --color-foreground: #1F2421;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #1F2421;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #1F2421;
+  --color-primary: #7A4A2A;
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: #F2E6DA;
+  --color-secondary-foreground: #5E3A20;
+  --color-accent: #F2E6DA;
+  --color-accent-foreground: #5E3A20;
+  --color-muted: #E7E0D5;
+  --color-muted-foreground: #4F5752;
+  --color-destructive: #A23A2A;
+  --color-border: #E7E0D5;
+  --color-input: #E7E0D5;
+  --color-ring: #7A4A2A;
+  --color-dark: #3B2A1F;
+  --color-on-dark: #EADCCD;
+  --color-success: #24493A;
+
+  --font-sans: var(--font-manrope);
+
+  --text-display: 3.75rem;
+  --text-display--line-height: 1.06;
+  --text-h1: 2.25rem;
+  --text-h1--line-height: 1.15;
+  --text-h2: 1.875rem;
+  --text-h2--line-height: 1.2;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.3;
+
+  --radius-card: 1.125rem;
+  --radius-block: 1.5rem;
+
+  --container-page: 75rem;
+}
+
+@layer base {
+  h1, h2, h3 {
+    @apply font-extrabold;
+  }
+  body {
+     @apply bg-background text-foreground;
+   }
+}
