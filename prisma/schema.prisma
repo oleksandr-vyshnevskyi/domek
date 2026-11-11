@@ -11,17 +11,81 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-model User { 
-  id    Int     @id @default(autoincrement()) 
-  email String  @unique
-  name  String?
-  posts Post[]
-} 
-model Post { 
-  id        Int     @id @default(autoincrement()) 
-  title     String
-  content   String?
-  published Boolean @default(false) 
-  author    User    @relation(fields: [authorId], references: [id]) 
-  authorId  Int
-} 
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ListingType {
+  APARTMENT
+  HOUSE
+  STUDIO
+}
+
+enum ListingStatus {
+  ACTIVE
+  HIDDEN
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  role      Role      @default(USER)
+  isHost    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  listings  Listing[]
+  bookings  Booking[]
+}
+
+model Listing {
+  id            Int           @id @default(autoincrement())
+  title         String
+  description   String?
+  city          String
+  address       String
+  rules         String
+  type          ListingType   @default(APARTMENT)
+  status        ListingStatus @default(ACTIVE)
+  pricePerNight Int
+  cleaningFee   Int
+  maxGuests     Int
+  bedrooms      Int
+  bathrooms     Int
+  amenities     String[]
+  images        String[]
+  checkInFrom   String        @default("14:00")
+  checkOutUntil String        @default("11:00")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  owner         User          @relation(fields: [ownerId], references: [id])
+  ownerId       Int
+  bookings      Booking[]
+
+  @@index([city])
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+}
+
+model Booking {
+  id         Int           @id @default(autoincrement())
+  listing    Listing       @relation(fields: [listingId], references: [id])
+  listingId  Int
+  guest      User          @relation(fields: [guestId], references: [id])
+  guestId    Int
+  startDate  DateTime      @db.Date
+  endDate    DateTime      @db.Date
+  guests     Int
+  totalPrice Int
+  status     BookingStatus @default(PENDING)
+  message    String?
+  createdAt  DateTime      @default(now())
+
+  @@index([listingId, startDate])
+}
