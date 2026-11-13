@@ -17,6 +17,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.6.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20.19.43",
     "@types/pg": "^8.23.1",

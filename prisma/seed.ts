@@ -3,12 +3,14 @@ import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient , Role} from "../src/generated/prisma/client";
 import { LISTINGS } from "./seed-data";
+import { generateListings } from "./generate-listings";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  
   const guest = await prisma.user.upsert({
   where: { email: "someoneguest@demo.test" },
   update: {},
@@ -28,7 +30,7 @@ async function main() {
 await prisma.booking.deleteMany();
 await prisma.listing.deleteMany();
 await prisma.listing.createMany({
-  data: LISTINGS.map((l) => ({ ...l, ownerId: host.id })),
+  data: [...LISTINGS, ...generateListings(13)].map((l) => ({ ...l, ownerId: host.id })),
 });
 console.log("listings:", await prisma.listing.count());
   console.log("guest:", guest);
