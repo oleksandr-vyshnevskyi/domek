@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { Pool } from "pg";
-import { Role } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { PrismaClient , Role} from "../src/generated/prisma/client";
+import { LISTINGS } from "./seed-data";
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
@@ -14,16 +14,23 @@ async function main() {
   update: {},
   create: { name: "User 1", role: Role.USER, email: "someoneguest@demo.test" },
 });
+
   const admin = await prisma.user.upsert({
   where: { email: "someoneadmin@demo.test" },
   update: {},
-  create: { name: "User 1", role: Role.ADMIN, email: "someoneadmin@demo.test" },
+  create: { name: "User 2", role: Role.ADMIN, email: "someoneadmin@demo.test" },
 });
   const host = await prisma.user.upsert({
   where: { email: "someonehost@demo.test" },
   update: {},
-  create: { name: "User 2", role: Role.USER, isHost: true, email: "someonehost@demo.test" },
+  create: { name: "User 3", role: Role.USER, isHost: true, email: "someonehost@demo.test" },
 });
+await prisma.booking.deleteMany();
+await prisma.listing.deleteMany();
+await prisma.listing.createMany({
+  data: LISTINGS.map((l) => ({ ...l, ownerId: host.id })),
+});
+console.log("listings:", await prisma.listing.count());
   console.log("guest:", guest);
   console.log("admin:", admin);
   console.log("host:", host);
