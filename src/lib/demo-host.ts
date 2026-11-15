@@ -1,0 +1,1 @@
+export const DEMO_HOST_EMAIL = "someonehost@demo.test";

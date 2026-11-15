@@ -1,5 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { ListingStatus } from "@/generated/prisma/client";
+import { DEMO_HOST_EMAIL } from "@/lib/demo-host";
+
+export async function getHostListings() {
+  return await prisma.listing.findMany({
+    where: { owner: { email: DEMO_HOST_EMAIL } },
+    orderBy: { id: "desc" },
+  });
+}
 
 export async function getListings() {
   return await prisma.listing.findMany({ where: { status: ListingStatus.ACTIVE }, orderBy: { id: "asc" } });
