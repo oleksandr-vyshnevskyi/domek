@@ -8,6 +8,40 @@ import { listingSchema } from "@/lib/validations/listing";
 import { ListingStatus } from "@/generated/prisma/client";
 import { DEMO_HOST_EMAIL } from "@/lib/demo-host";
 
+export async function updateListing(
+  id: number,
+  prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const raw = Object.fromEntries(formData);
+  const data = { ...raw, amenities: formData.getAll("amenities") };
+  const result = listingSchema.safeParse(data);
+
+  if (!result.success) {
+    return {
+      errors: z.flattenError(result.error).fieldErrors,
+      message: "Popraw błędy w formularzu.",
+      values: data as Record<string, string | string[]>,
+    };
+  }
+
+  try {
+    const { count } = await prisma.listing.updateMany({
+      where: { id, owner: { email: DEMO_HOST_EMAIL } },
+      data: result.data,
+    });
+    if (count === 0) {
+      return { message: "Nie znaleziono ogłoszenia." };
+    }
+  } catch {
+    return { message: "Nie udało się zapisać ogłoszenia." };
+  }
+
+  revalidatePath("/search");
+  revalidatePath("/host");
+  revalidatePath(`/listings/${id}`);
+  redirect("/host");
+}
 export type ActionState = {
   errors?: Record<string, string[] | undefined>;
   message?: string;

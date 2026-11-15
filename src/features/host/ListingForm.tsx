@@ -2,11 +2,16 @@
 
 import { useActionState } from "react";
 import type { ReactNode } from "react";
-import { createListing, type ActionState } from "@/features/host/actions";
+import type { ActionState } from "@/features/host/actions";
 import { AMENITIES } from "@/lib/amenities";
 
-const initialState: ActionState = {};
 const inputClass = "rounded border px-3 py-2";
+
+type Props = {
+  action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
+  initialValues?: Record<string, string | string[]>;
+  submitLabel: string;
+};
 
 function Field({
   label,
@@ -26,20 +31,20 @@ function Field({
   );
 }
 
-export default function ListingForm() {
-  const [state, formAction, pending] = useActionState(
-    createListing,
-    initialState,
-  );
+export default function ListingForm({ action, initialValues, submitLabel }: Props) {
+  const [state, formAction, pending] = useActionState(action, {
+    values: initialValues,
+  });
   const errors = state.errors ?? {};
   const value = (name: string, fallback = "") =>
     (state.values?.[name] as string | undefined) ?? fallback;
   const selectedAmenities =
     (state.values?.amenities as string[] | undefined) ?? [];
+
   return (
     <form action={formAction} className="flex max-w-xl flex-col gap-4">
       <Field label="Tytuł" errors={errors.title}>
-       <input name="title" type="text" defaultValue={value("title")} className={inputClass} />
+        <input name="title" type="text" defaultValue={value("title")} className={inputClass} />
       </Field>
 
       <Field label="Opis" errors={errors.description}>
@@ -67,12 +72,7 @@ export default function ListingForm() {
       </Field>
 
       <Field label="Opłata za sprzątanie (zł)" errors={errors.cleaningFee}>
-        <input
-          name="cleaningFee"
-          type="number"
-         defaultValue={value("cleaningFee", "0")}
-          className={inputClass}
-        />
+        <input name="cleaningFee" type="number" defaultValue={value("cleaningFee", "0")} className={inputClass} />
       </Field>
 
       <Field label="Maks. liczba gości" errors={errors.maxGuests}>
@@ -80,39 +80,19 @@ export default function ListingForm() {
       </Field>
 
       <Field label="Sypialnie" errors={errors.bedrooms}>
-        <input
-          name="bedrooms"
-          type="number"
-          defaultValue={value("bedrooms", "1")}
-          className={inputClass}
-        />
+        <input name="bedrooms" type="number" defaultValue={value("bedrooms", "1")} className={inputClass} />
       </Field>
 
       <Field label="Łazienki" errors={errors.bathrooms}>
-        <input
-          name="bathrooms"
-          type="number"
-          defaultValue={value("bathrooms", "1")}
-          className={inputClass}
-        />
+        <input name="bathrooms" type="number" defaultValue={value("bathrooms", "1")} className={inputClass} />
       </Field>
 
       <Field label="Zameldowanie od" errors={errors.checkInFrom}>
-        <input
-          name="checkInFrom"
-          type="time"
-          defaultValue={value("checkInFrom", "14:00")}
-          className={inputClass}
-        />
+        <input name="checkInFrom" type="time" defaultValue={value("checkInFrom", "14:00")} className={inputClass} />
       </Field>
 
       <Field label="Wymeldowanie do" errors={errors.checkOutUntil}>
-        <input
-          name="checkOutUntil"
-          type="time"
-          defaultValue={value("checkOutUntil", "11:00")}
-          className={inputClass}
-        />
+        <input name="checkOutUntil" type="time" defaultValue={value("checkOutUntil", "11:00")} className={inputClass} />
       </Field>
 
       <Field label="Zasady" errors={errors.rules}>
@@ -123,7 +103,12 @@ export default function ListingForm() {
         <legend>Udogodnienia</legend>
         {Object.entries(AMENITIES).map(([key, label]) => (
           <label key={key} className="flex items-center gap-2">
-           <input type="checkbox" name="amenities" value={key} defaultChecked={selectedAmenities.includes(key)} />
+            <input
+              type="checkbox"
+              name="amenities"
+              value={key}
+              defaultChecked={selectedAmenities.includes(key)}
+            />
             {label}
           </label>
         ))}
@@ -131,12 +116,8 @@ export default function ListingForm() {
 
       {state.message && <p className="text-red-600">{state.message}</p>}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded border px-4 py-2"
-      >
-        {pending ? "Zapisywanie…" : "Dodaj ogłoszenie"}
+      <button type="submit" disabled={pending} className="rounded border px-4 py-2">
+        {pending ? "Zapisywanie…" : submitLabel}
       </button>
     </form>
   );

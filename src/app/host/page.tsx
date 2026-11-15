@@ -10,19 +10,22 @@ async function HostListings() {
   return (
     <ul className="space-y-3">
       {listings.map((listing) => (
-        <li key={listing.id} className="flex items-center gap-4">
-          <span>{listing.title}</span>
-          <span className="text-sm text-gray-600">
-            {listing.status === ListingStatus.ACTIVE ? "Aktywne" : "Ukryte"}
-          </span>
-          {listing.status === ListingStatus.ACTIVE && (
-            <form action={hideListing.bind(null, listing.id)}>
-              <button type="submit" className="rounded border px-3 py-1">
-                Ukryj
-              </button>
-            </form>
-          )}
-        </li>
+       <li key={listing.id} className="flex items-center gap-4">
+  <span>{listing.title}</span>
+  <span className="text-sm text-gray-600">
+    {listing.status === ListingStatus.ACTIVE ? "Aktywne" : "Ukryte"}
+  </span>
+  <Link href={`/host/listings/${listing.id}/edit`} className="underline">
+    Edytuj
+  </Link>
+  {listing.status === ListingStatus.ACTIVE && (
+    <form action={hideListing.bind(null, listing.id)}>
+      <button type="submit" className="rounded border px-3 py-1">
+        Ukryj
+      </button>
+    </form>
+  )}
+</li>
       ))}
     </ul>
   );

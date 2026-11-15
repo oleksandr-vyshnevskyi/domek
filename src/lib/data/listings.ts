@@ -2,6 +2,15 @@ import { prisma } from "@/lib/prisma";
 import { ListingStatus } from "@/generated/prisma/client";
 import { DEMO_HOST_EMAIL } from "@/lib/demo-host";
 
+export async function getHostListingById(id: string) {
+  const numericId = Number(id);
+  if (!Number.isInteger(numericId) || numericId < 1 || numericId > 2147483647) {
+    return null;
+  }
+  return await prisma.listing.findFirst({
+    where: { id: numericId, owner: { email: DEMO_HOST_EMAIL } },
+  });
+}
 export async function getHostListings() {
   return await prisma.listing.findMany({
     where: { owner: { email: DEMO_HOST_EMAIL } },
