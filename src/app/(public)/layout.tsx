@@ -6,7 +6,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <>
       <Header/>
-      {children}
+     <main className="mx-auto w-full max-w-page px-4 sm:px-6 lg:px-8">
+  {children}
+</main>
       <Footer />
     </>
   )
