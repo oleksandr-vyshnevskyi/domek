@@ -29,7 +29,7 @@ enum ListingStatus {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        String        @id @default(cuid())
   name      String
   email     String    @unique
   role      Role      @default(USER)
@@ -60,7 +60,7 @@ model Listing {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   owner         User          @relation(fields: [ownerId], references: [id])
-  ownerId       Int
+  ownerId       String 
   bookings      Booking[]
 
   @@index([city])
@@ -78,7 +78,7 @@ model Booking {
   listing    Listing       @relation(fields: [listingId], references: [id])
   listingId  Int
   guest      User          @relation(fields: [guestId], references: [id])
-  guestId    Int
+  guestId    String 
   startDate  DateTime      @db.Date
   endDate    DateTime      @db.Date
   guests     Int

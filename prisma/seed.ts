@@ -17,7 +17,7 @@ function addDays(days: number) {
 
 function makeBooking(
   listing: { id: number; pricePerNight: number; cleaningFee: number; maxGuests: number },
-  guestId: number,
+  guestId: string,
   startOffset: number,
   nights: number,
   guests: number,
