@@ -5,9 +5,33 @@ import { PrismaClient , Role, BookingStatus } from "../src/generated/prisma/clie
 import { LISTINGS } from "./seed-data";
 import { generateListings } from "./generate-listings";
 import { pickImages } from "./seed-images";
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
+const auth = betterAuth({
+  database: prismaAdapter(prisma, { provider: "postgresql" }),
+  emailAndPassword: { enabled: true, autoSignIn: false },
+});
+
+const DEMO_EMAILS = [
+  process.env.DEMO_GUEST_EMAIL!,
+  process.env.DEMO_ADMIN_EMAIL!,
+  process.env.DEMO_HOST_EMAIL!,
+];
+
+async function createDemoUser(
+  name: string,
+  email: string,
+  data: { role?: Role; isHost?: boolean },
+) {
+  const { user } = await auth.api.signUpEmail({
+    body: { name, email, password: process.env.DEMO_PASSWORD! },
+  });
+  return prisma.user.update({ where: { id: user.id }, data });
+}
 function addDays(days: number) {
   const d = new Date();
   d.setUTCHours(0, 0, 0, 0);
@@ -37,22 +61,13 @@ function makeBooking(
 }
 async function main() {
   
-  const guest = await prisma.user.upsert({
-  where: { email: "someoneguest@demo.test" },
-  update: {},
-  create: { name: "User 1", role: Role.USER, email: "someoneguest@demo.test" },
-});
+await prisma.booking.deleteMany();
+await prisma.listing.deleteMany();
+await prisma.user.deleteMany({ where: { email: { in: DEMO_EMAILS } } });
 
-  const admin = await prisma.user.upsert({
-  where: { email: "someoneadmin@demo.test" },
-  update: {},
-  create: { name: "User 2", role: Role.ADMIN, email: "someoneadmin@demo.test" },
-});
-  const host = await prisma.user.upsert({
-  where: { email: "someonehost@demo.test" },
-  update: {},
-  create: { name: "User 3", role: Role.USER, isHost: true, email: "someonehost@demo.test" },
-});
+const guest = await createDemoUser("User 1", process.env.DEMO_GUEST_EMAIL!, { role: Role.USER });
+const admin = await createDemoUser("User 2", process.env.DEMO_ADMIN_EMAIL!, { role: Role.ADMIN });
+const host = await createDemoUser("User 3", process.env.DEMO_HOST_EMAIL!, { role: Role.USER, isHost: true });
 await prisma.booking.deleteMany();
 await prisma.listing.deleteMany();
 await prisma.listing.createMany({

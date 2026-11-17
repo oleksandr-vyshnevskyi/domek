@@ -1,5 +1,7 @@
 import Logo from '@/components/ui/Logo/logo'
 import Nav from '@/components/ui/Nav/nav'
+import { Suspense } from "react";
+import { UserMenu } from "@/components/user-menu";
 
 export default function Header({ dark = false }: { dark?: boolean }) {
   return (
@@ -11,6 +13,9 @@ export default function Header({ dark = false }: { dark?: boolean }) {
       <div className="mx-auto flex w-full max-w-page items-center justify-between p-4">
         <Logo />
         <Nav />
+        <Suspense fallback={<div className="h-10 w-10 rounded-full bg-muted" />}>
+  <UserMenu />
+</Suspense>
       </div>
     </header>
   )
