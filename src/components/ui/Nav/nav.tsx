@@ -22,9 +22,11 @@ export default function Nav() {
           {label}
         </Link>
       ))}
-
       <Link href="/login" className="rounded-full border border-current px-4 py-2">
         Zaloguj się
+      </Link>
+      <Link href="/register" className="rounded-full border border-current px-4 py-2">
+        Zarejestruj się
       </Link>
     </nav>
   )

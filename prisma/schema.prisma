@@ -29,14 +29,21 @@ enum ListingStatus {
 }
 
 model User {
-  id        String        @id @default(cuid())
-  name      String
-  email     String    @unique
-  role      Role      @default(USER)
-  isHost    Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  listings  Listing[]
-  bookings  Booking[]
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  role          Role      @default(USER)
+  isHost        Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  listings      Listing[]
+  bookings      Booking[]
+  emailVerified Boolean   @default(false)
+  image         String?
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("user")
 }
 
 model Listing {
@@ -60,7 +67,7 @@ model Listing {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   owner         User          @relation(fields: [ownerId], references: [id])
-  ownerId       String 
+  ownerId       String
   bookings      Booking[]
 
   @@index([city])
@@ -78,7 +85,7 @@ model Booking {
   listing    Listing       @relation(fields: [listingId], references: [id])
   listingId  Int
   guest      User          @relation(fields: [guestId], references: [id])
-  guestId    String 
+  guestId    String
   startDate  DateTime      @db.Date
   endDate    DateTime      @db.Date
   guests     Int
@@ -88,4 +95,52 @@ model Booking {
   createdAt  DateTime      @default(now())
 
   @@index([listingId, startDate])
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }
