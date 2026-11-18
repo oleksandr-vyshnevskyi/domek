@@ -7,6 +7,7 @@ import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/Button/button";
 import { Input } from "@/components/ui/Input/input";
 import { Label } from "@/components/ui/Label/label";
+import { GoogleButton } from "@/components/google-button";
 
 const errors: Record<string, string> = {
   USER_ALREADY_EXISTS: "Konto z tym adresem e-mail już istnieje.",
@@ -57,6 +58,12 @@ export default function RegisterPage() {
       <Button type="submit" disabled={pending}>
         {pending ? "Tworzenie konta..." : "Zarejestruj się"}
       </Button>
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <span className="h-px flex-1 bg-border" />
+        lub
+        <span className="h-px flex-1 bg-border" />
+      </div>
+      <GoogleButton />
       <p className="text-sm">
         Masz już konto? <Link href="/login" className="underline">Zaloguj się</Link>
       </p>

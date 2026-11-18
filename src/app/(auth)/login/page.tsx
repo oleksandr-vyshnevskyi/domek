@@ -7,6 +7,7 @@ import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/Button/button";
 import { Input } from "@/components/ui/Input/input";
 import { Label } from "@/components/ui/Label/label";
+import { GoogleButton } from "@/components/google-button";
 
 const errors: Record<string, string> = {
   INVALID_EMAIL_OR_PASSWORD: "Nieprawidłowy e-mail lub hasło.",
@@ -51,6 +52,12 @@ export default function LoginPage() {
       <Button type="submit" disabled={pending}>
         {pending ? "Logowanie..." : "Zaloguj się"}
       </Button>
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <span className="h-px flex-1 bg-border" />
+        lub
+        <span className="h-px flex-1 bg-border" />
+      </div>
+      <GoogleButton />
       <p className="text-sm">
         Nie masz konta? <Link href="/register" className="underline">Zarejestruj się</Link>
       </p>
