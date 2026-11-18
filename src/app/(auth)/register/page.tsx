@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button/button";
 import { Input } from "@/components/ui/Input/input";
 import { Label } from "@/components/ui/Label/label";
 import { GoogleButton } from "@/components/google-button";
+import { AuthDivider } from "@/components/auth-divider";
 
 const errors: Record<string, string> = {
   USER_ALREADY_EXISTS: "Konto z tym adresem e-mail już istnieje.",
@@ -40,33 +41,43 @@ export default function RegisterPage() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mx-auto flex max-w-sm flex-col gap-4 py-16">
-      <h1 className="text-2xl font-semibold">Rejestracja</h1>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="name">Imię</Label>
-        <Input id="name" name="name" required />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="email">E-mail</Label>
-        <Input id="email" name="email" type="email" required />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Hasło</Label>
-        <Input id="password" name="password" type="password" minLength={8} required />
-      </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Tworzenie konta..." : "Zarejestruj się"}
-      </Button>
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <span className="h-px flex-1 bg-border" />
-        lub
-        <span className="h-px flex-1 bg-border" />
-      </div>
+    <div className="flex flex-col gap-[22px]">
+      <h1 className="text-[32px]">Utwórz konto</h1>
+
       <GoogleButton />
-      <p className="text-sm">
-        Masz już konto? <Link href="/login" className="underline">Zaloguj się</Link>
+
+      <AuthDivider>lub e-mailem</AuthDivider>
+
+      <form onSubmit={onSubmit} className="flex flex-col gap-3.5">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="name">Imię</Label>
+          <Input id="name" name="name" autoComplete="given-name" required />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="email">E-mail</Label>
+          <Input id="email" name="email" type="email" placeholder="jan@example.com" required />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="password">Hasło</Label>
+          <Input id="password" name="password" type="password" minLength={8} required />
+          <span className="text-[13px] text-muted-foreground">Minimum 8 znaków</span>
+        </div>
+        {error && (
+          <p role="alert" className="text-sm font-semibold text-destructive">
+            {error}
+          </p>
+        )}
+        <Button type="submit" size="lg" disabled={pending} className="mt-1 w-full">
+          {pending ? "Tworzenie konta..." : "Zarejestruj się"}
+        </Button>
+      </form>
+
+      <p className="text-center text-[15px] text-muted-foreground">
+        Masz już konto?{" "}
+        <Link href="/login" className="font-bold text-foreground hover:text-primary">
+          Zaloguj się
+        </Link>
       </p>
-    </form>
+    </div>
   );
 }

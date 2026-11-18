@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 import ListingForm from "@/features/host/ListingForm";
 import { updateListing } from "@/features/host/actions";
@@ -41,9 +43,16 @@ async function EditListing({ params }: Props) {
 
 export default function EditListingPage({ params }: Props) {
   return (
-    <div>
-      <h1 className="mb-4 text-2xl font-bold">Edytuj ogłoszenie</h1>
-      <Suspense fallback={<p>Ładowanie…</p>}>
+    <div className="mx-auto flex max-w-[820px] flex-col gap-7 py-10">
+      <Link
+        href="/host"
+        className="flex w-fit items-center gap-1.5 text-sm font-semibold hover:text-primary"
+      >
+        <ArrowLeft className="size-4" aria-hidden="true" />
+        Wróć do panelu
+      </Link>
+      <h1 className="text-[34px] leading-tight">Edytuj ogłoszenie</h1>
+      <Suspense fallback={<p className="text-muted-foreground">Ładowanie…</p>}>
         <EditListing params={params} />
       </Suspense>
     </div>

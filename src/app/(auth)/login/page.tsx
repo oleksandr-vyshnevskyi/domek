@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button/button";
 import { Input } from "@/components/ui/Input/input";
 import { Label } from "@/components/ui/Label/label";
 import { GoogleButton } from "@/components/google-button";
+import { AuthDivider } from "@/components/auth-divider";
 
 const errors: Record<string, string> = {
   INVALID_EMAIL_OR_PASSWORD: "Nieprawidłowy e-mail lub hasło.",
@@ -38,29 +39,38 @@ export default function LoginPage() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mx-auto flex max-w-sm flex-col gap-4 py-16">
-      <h1 className="text-2xl font-semibold">Logowanie</h1>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="email">E-mail</Label>
-        <Input id="email" name="email" type="email" required />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="password">Hasło</Label>
-        <Input id="password" name="password" type="password" required />
-      </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <Button type="submit" disabled={pending}>
-        {pending ? "Logowanie..." : "Zaloguj się"}
-      </Button>
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <span className="h-px flex-1 bg-border" />
-        lub
-        <span className="h-px flex-1 bg-border" />
-      </div>
+    <div className="flex flex-col gap-[22px]">
+      <h1 className="text-[32px]">Zaloguj się</h1>
+
       <GoogleButton />
-      <p className="text-sm">
-        Nie masz konta? <Link href="/register" className="underline">Zarejestruj się</Link>
+
+      <AuthDivider>lub e-mailem</AuthDivider>
+
+      <form onSubmit={onSubmit} className="flex flex-col gap-3.5">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="email">E-mail</Label>
+          <Input id="email" name="email" type="email" placeholder="jan@example.com" required />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="password">Hasło</Label>
+          <Input id="password" name="password" type="password" required />
+        </div>
+        {error && (
+          <p role="alert" className="text-sm font-semibold text-destructive">
+            {error}
+          </p>
+        )}
+        <Button type="submit" size="lg" disabled={pending} className="mt-1 w-full">
+          {pending ? "Logowanie..." : "Zaloguj się"}
+        </Button>
+      </form>
+
+      <p className="text-center text-[15px] text-muted-foreground">
+        Nie masz konta?{" "}
+        <Link href="/register" className="font-bold text-foreground hover:text-primary">
+          Zarejestruj się
+        </Link>
       </p>
-    </form>
+    </div>
   );
 }

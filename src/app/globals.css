@@ -25,10 +25,18 @@
   --color-input: #E7E0D5;
   --color-ring: #7A4A2A;
   --color-dark: #3B2A1F;
+  --color-darker: #2A1E16;
+  --color-on-dark-muted: #CDB8A3;
+  --color-gold: #E8C9A6;
+  --color-field: #DDD5C8;
+  --color-subtle: #EFE9DF;
+  --color-success-soft: #E3ECE6;
+  --color-warning: #6E4500;
+  --color-warning-soft: #FCEBC8;
   --color-on-dark: #EADCCD;
   --color-success: #24493A;
 
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
 
   --text-display: 3.75rem;
   --text-display--line-height: 1.06;
@@ -44,7 +52,7 @@
 
   --container-page: 75rem;
 
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-manrope), system-ui, sans-serif;
 
   --color-sidebar-ring: var(--sidebar-ring);
 
@@ -90,6 +98,12 @@
 @layer base {
   h1, h2, h3 {
     @apply font-extrabold;
+  }
+  a, button {
+    @apply cursor-pointer;
+  }
+  ::selection {
+    @apply bg-secondary text-secondary-foreground;
   }
   body {
      @apply bg-background text-foreground;
@@ -150,7 +164,7 @@
 
   --chart-5: oklch(0.269 0 0);
 
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 
   --sidebar: oklch(0.985 0 0);
 

@@ -1,21 +1,22 @@
 import Link from "next/link";
 import { getSession } from "@/lib/session";
-import { Button } from "@/components/ui/Button/button";
 import { UserDropdown } from "@/components/user-dropdown";
 
-export async function UserMenu() {
+export async function UserMenu({ dark = false }: { dark?: boolean }) {
   const session = await getSession();
 
   if (!session) {
     return (
-      <div className="flex items-center gap-2">
-                <Button variant="ghost" nativeButton={false} render={<Link href="/login" />}>
-            Zaloguj się
-            </Button>
-            <Button nativeButton={false} render={<Link href="/register" />}>
-            Zarejestruj się
-            </Button>
-      </div>
+      <Link
+        href="/login"
+        className={`rounded-full border-[1.5px] px-[18px] py-2.5 text-[15px] font-semibold transition-colors ${
+          dark
+            ? "border-white text-white hover:bg-white hover:text-dark"
+            : "border-foreground text-foreground hover:bg-foreground hover:text-background"
+        }`}
+      >
+        Zaloguj się
+      </Link>
     );
   }
 

@@ -1,16 +1,22 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { Bath, BedDouble, Check, Users } from "lucide-react";
+import { ArrowLeft, Bath, BedDouble, Check, Clock, Users } from "lucide-react";
 import { getListingById } from "@/lib/data/listings";
+import { AMENITIES } from "@/lib/amenities";
 
 type Props = { params: Promise<{ id: string }> };
 
 const typeLabels = {
-  APARTMENT: "Apartament",
-  HOUSE: "Dom",
+  APARTMENT: "Całe mieszkanie",
+  HOUSE: "Cały dom",
   STUDIO: "Studio",
 };
+
+function amenityLabel(key: string) {
+  return AMENITIES[key as keyof typeof AMENITIES] ?? key;
+}
 
 async function ListingDetails({ params }: Props) {
   const { id } = await params;
@@ -23,110 +29,131 @@ async function ListingDetails({ params }: Props) {
   const thumbs = restImages.slice(0, 4);
 
   return (
-    <div className="py-8">
-      <header className="mb-6">
-        <p className="text-sm text-muted-foreground">
-          {typeLabels[listing.type]} · {listing.city}
+    <div className="flex flex-col gap-7 pt-6 pb-16">
+      <Link
+        href="/search"
+        className="flex w-fit items-center gap-1.5 text-sm font-semibold hover:text-primary"
+      >
+        <ArrowLeft className="size-4" aria-hidden="true" />
+        Wróć do wyników
+      </Link>
+
+      <header className="flex flex-col gap-1.5">
+        <h1 className="text-[28px] leading-tight sm:text-4xl">{listing.title}</h1>
+        <p className="text-muted-foreground">
+          {listing.city} · {listing.address}
         </p>
-        <h1 className="mt-1 text-h1">{listing.title}</h1>
-        <p className="mt-1 text-muted-foreground">{listing.address}</p>
       </header>
 
-      <div className="grid gap-2 overflow-hidden rounded-block lg:grid-cols-2">
-        <div className="relative aspect-4/3 bg-muted">
+      <div className="grid gap-2.5 overflow-hidden rounded-card lg:h-[410px] lg:grid-cols-[2fr_1fr_1fr] lg:grid-rows-2">
+        <div className="relative aspect-4/3 bg-subtle lg:row-span-2 lg:aspect-auto">
           {mainImage && (
             <Image
               src={mainImage}
               alt={listing.title}
               fill
               priority
-              sizes="(min-width: 1200px) 600px, 100vw"
+              sizes="(min-width: 1024px) 600px, 100vw"
               className="object-cover"
             />
           )}
         </div>
-        {thumbs.length > 0 && (
-          <div className="hidden grid-cols-2 grid-rows-2 gap-2 lg:grid">
-            {thumbs.map((src, i) => (
-              <div key={src} className="relative bg-muted">
-                <Image
-                  src={src}
-                  alt={`${listing.title} ${i + 2}`}
-                  fill
-                  sizes="300px"
-                  className="object-cover"
-                />
-              </div>
-            ))}
+        {thumbs.map((src, i) => (
+          <div key={src} className="relative hidden bg-subtle lg:block">
+            <Image
+              src={src}
+              alt={`${listing.title} — zdjęcie ${i + 2}`}
+              fill
+              sizes="300px"
+              className="object-cover"
+            />
           </div>
-        )}
+        ))}
       </div>
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_22rem]">
-        <div className="space-y-10">
-          <div className="flex flex-wrap gap-6 border-b border-border pb-6">
-            <span className="flex items-center gap-2">
-              <Users className="size-5 text-primary" />
-              {listing.maxGuests} gości
-            </span>
-            <span className="flex items-center gap-2">
-              <BedDouble className="size-5 text-primary" />
-              {listing.bedrooms} sypialni
-            </span>
-            <span className="flex items-center gap-2">
-              <Bath className="size-5 text-primary" />
-              {listing.bathrooms} łazienek
-            </span>
+      <div className="grid items-start gap-10 lg:grid-cols-[1fr_380px]">
+        <div className="flex min-w-0 flex-col gap-8">
+          <div className="flex flex-col gap-2 border-b border-border pb-6">
+            <h2 className="text-xl">
+              {typeLabels[listing.type]} · {listing.city}
+            </h2>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 text-[15px] text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <Users className="size-4" aria-hidden="true" />
+                {listing.maxGuests} gości
+              </span>
+              <span className="flex items-center gap-2">
+                <BedDouble className="size-4" aria-hidden="true" />
+                {listing.bedrooms} sypialnie
+              </span>
+              <span className="flex items-center gap-2">
+                <Bath className="size-4" aria-hidden="true" />
+                {listing.bathrooms} łazienki
+              </span>
+            </div>
           </div>
 
           {listing.description && (
-            <section>
-              <h2 className="mb-3 text-h2">Opis</h2>
-              <p className="whitespace-pre-line leading-relaxed">
-                {listing.description}
-              </p>
+            <section className="flex flex-col gap-3">
+              <h2 className="text-[22px]">O miejscu</h2>
+              <p className="whitespace-pre-line leading-relaxed">{listing.description}</p>
             </section>
           )}
 
           {listing.amenities.length > 0 && (
-            <section>
-              <h2 className="mb-3 text-h2">Udogodnienia</h2>
-              <ul className="grid gap-3 sm:grid-cols-2">
+            <section className="flex flex-col gap-3.5">
+              <h2 className="text-[22px]">Udogodnienia</h2>
+              <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
                 {listing.amenities.map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <Check className="size-4 text-success" />
-                    {item}
+                  <li key={item} className="flex items-center gap-2.5">
+                    <Check className="size-4 text-success" aria-hidden="true" />
+                    {amenityLabel(item)}
                   </li>
                 ))}
               </ul>
             </section>
           )}
 
-          <section>
-            <h2 className="mb-3 text-h2">Zasady pobytu</h2>
-            <p className="whitespace-pre-line leading-relaxed">{listing.rules}</p>
+          <section className="flex flex-col gap-3.5">
+            <h2 className="text-[22px]">Zasady</h2>
+            <div className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
+              <span className="flex items-center gap-2.5">
+                <Clock className="size-4 text-muted-foreground" aria-hidden="true" />
+                Zameldowanie od {listing.checkInFrom}
+              </span>
+              <span className="flex items-center gap-2.5">
+                <Clock className="size-4 text-muted-foreground" aria-hidden="true" />
+                Wymeldowanie do {listing.checkOutUntil}
+              </span>
+            </div>
+            {listing.rules && (
+              <p className="whitespace-pre-line leading-relaxed">{listing.rules}</p>
+            )}
           </section>
         </div>
 
-        <aside className="h-fit rounded-card border border-border bg-card p-6 lg:sticky lg:top-6">
-          <p>
-            <span className="text-h2 font-extrabold text-primary">
-              {listing.pricePerNight} zł
-            </span>
-            <span className="text-muted-foreground"> / noc</span>
+        <aside className="flex flex-col gap-4 rounded-[20px] border border-border bg-card p-6 shadow-[0_10px_30px_rgba(31,36,33,0.08)] lg:sticky lg:top-24">
+          <p className="text-[26px] font-extrabold">
+            {listing.pricePerNight} zł
+            <span className="text-[15px] font-medium text-muted-foreground"> / noc</span>
           </p>
-          <dl className="mt-4 space-y-2 text-sm">
+          <Link
+            href={`/listings/${listing.id}/book`}
+            className="flex h-13 items-center justify-center rounded-[14px] bg-primary text-base font-extrabold text-primary-foreground hover:bg-[#663D22] hover:text-primary-foreground"
+          >
+            Zarezerwuj
+          </Link>
+          <p className="text-center text-[13px] text-muted-foreground">
+            Nie pobieramy jeszcze opłaty
+          </p>
+          <dl className="flex flex-col gap-2.5 border-t border-border pt-4 text-[15px]">
             <div className="flex justify-between">
-              <dt className="text-muted-foreground">Sprzątanie</dt>
+              <dt>Sprzątanie</dt>
               <dd>{listing.cleaningFee} zł</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-muted-foreground">Zameldowanie od</dt>
-              <dd>{listing.checkInFrom}</dd>
-            </div>
-            <div className="flex justify-between">
-              <dt className="text-muted-foreground">Wymeldowanie do</dt>
-              <dd>{listing.checkOutUntil}</dd>
+              <dt>Maks. liczba gości</dt>
+              <dd>{listing.maxGuests}</dd>
             </div>
           </dl>
         </aside>
@@ -134,9 +161,10 @@ async function ListingDetails({ params }: Props) {
     </div>
   );
 }
+
 export default function ListingPage({ params }: Props) {
   return (
-    <Suspense fallback={<p>Ładowanie…</p>}>
+    <Suspense fallback={<p className="py-10 text-muted-foreground">Ładowanie…</p>}>
       <ListingDetails params={params} />
     </Suspense>
   );
