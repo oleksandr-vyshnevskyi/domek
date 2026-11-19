@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/Input/input";
 import { Label } from "@/components/ui/Label/label";
 import { GoogleButton } from "@/components/google-button";
 import { AuthDivider } from "@/components/auth-divider";
+import { DemoLogin } from "@/features/auth/demo-login";
 
 const errors: Record<string, string> = {
   INVALID_EMAIL_OR_PASSWORD: "Nieprawidłowy e-mail lub hasło.",
@@ -41,6 +42,8 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col gap-[22px]">
       <h1 className="text-[32px]">Zaloguj się</h1>
+
+      <DemoLogin />
 
       <GoogleButton />
 
