@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { ListingStatus } from "@/generated/prisma/client";
-import { DEMO_HOST_EMAIL } from "@/lib/demo-host";
+
 
 export async function getHostListingById(id: string, ownerId: string){
   const numericId = Number(id);
