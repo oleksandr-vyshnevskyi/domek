@@ -6,13 +6,14 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { listingSchema } from "@/lib/validations/listing";
 import { ListingStatus } from "@/generated/prisma/client";
-import { DEMO_HOST_EMAIL } from "@/lib/demo-host";
-
+import { requireUser } from "@/lib/session";
 export async function updateListing(
+  
   id: number,
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const user = await requireUser();
   const raw = Object.fromEntries(formData);
   const data = { ...raw, amenities: formData.getAll("amenities") };
   const result = listingSchema.safeParse(data);
@@ -27,7 +28,7 @@ export async function updateListing(
 
   try {
     const { count } = await prisma.listing.updateMany({
-      where: { id, owner: { email: DEMO_HOST_EMAIL } },
+      where: { id, ownerId: user.id },
       data: result.data,
     });
     if (count === 0) {
@@ -52,6 +53,7 @@ export async function createListing(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
+  const user = await requireUser();
   const raw = Object.fromEntries(formData);
   const data = { ...raw, amenities: formData.getAll("amenities") };
   const result = listingSchema.safeParse(data);
@@ -64,17 +66,11 @@ export async function createListing(
     };
   }
 
-  const host = await prisma.user.findUnique({
-    where: { email: DEMO_HOST_EMAIL },
-  });
-
-  if (!host) {
-    return { message: "Nie znaleziono gospodarza." };
-  }
+ 
 
   try {
     await prisma.listing.create({
-      data: { ...result.data, ownerId: host.id },
+      data: { ...result.data, ownerId: user.id },
     });
   } catch {
     return { message: "Nie udało się zapisać ogłoszenia." };
@@ -84,8 +80,9 @@ export async function createListing(
   redirect("/host");
 }
 export async function hideListing(id: number) {
+  const user = await requireUser()
   await prisma.listing.updateMany({
-    where: { id, owner: { email: DEMO_HOST_EMAIL } },
+  where: { id, ownerId: user.id },
     data: { status: ListingStatus.HIDDEN },
   });
   revalidatePath("/host");

@@ -5,12 +5,13 @@ import { notFound } from "next/navigation";
 import ListingForm from "@/features/host/ListingForm";
 import { updateListing } from "@/features/host/actions";
 import { getHostListingById } from "@/lib/data/listings";
-
+import { requireUser } from "@/lib/session";
 type Props = { params: Promise<{ id: string }> };
 
 async function EditListing({ params }: Props) {
-  const { id } = await params;
-  const listing = await getHostListingById(id);
+   const { id } = await params;
+  const user = await requireUser();
+  const listing = await getHostListingById(id, user.id);
   if (!listing) {
     notFound();
   }

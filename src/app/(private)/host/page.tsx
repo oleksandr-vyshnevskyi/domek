@@ -5,9 +5,10 @@ import { Plus } from "lucide-react";
 import { getHostListings } from "@/lib/data/listings";
 import { hideListing } from "@/features/host/actions";
 import { ListingStatus } from "@/generated/prisma/client";
-
+import { requireUser } from "@/lib/session";
 async function HostListings() {
-  const listings = await getHostListings();
+ const user = await requireUser();
+  const listings = await getHostListings(user.id);
 
   if (listings.length === 0) {
     return (
