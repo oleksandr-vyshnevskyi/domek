@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import Logo from "@/components/ui/Logo/logo";
-import Nav from "@/components/ui/Nav/nav";
-import { UserMenu } from "@/components/user-menu";
+import Logo from "@/components/layout/logo";
+import Nav from "@/components/layout/nav";
+import { UserMenu } from "@/features/auth/user-menu";
 
 export default function Header({ dark = false }: { dark?: boolean }) {
   return (

@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Domek
 
-## Getting Started
+Apartment booking marketplace in Polish. Guests browse and book places to stay, hosts publish and manage their listings, an admin moderates the catalogue.
 
-First, run the development server:
+**Live demo:** https://domek-six.vercel.app
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Use the quick demo buttons on the login page to sign in as a guest or a host. No registration needed.
+
+## Features
+
+- Listing catalogue and listing detail pages
+- Sign in with email and password or with Google
+- One-click demo accounts (guest, host)
+- Private routes for signed-in users
+- Any user can become a host
+- Host panel: create, edit and hide listings, with server-side validation
+- Admin panel: all listings across hosts, hide or restore any of them
+- Ownership checked on the server in every action, not only in the UI
+- Nothing is hard-deleted: listings are hidden, bookings get a status
+- Booking flow (in progress)
+
+## Stack
+
+- Next.js 16 (App Router, Server Components, Server Actions)
+- TypeScript
+- Tailwind CSS v4, shadcn/ui
+- Prisma 7 + PostgreSQL (Neon)
+- Better Auth
+- Zod
+- Vercel
+
+## Project structure
+
+```
+src/
+  app/
+    (home)/      home page
+    (public)/    search, listing page
+    (auth)/      login, register
+    (private)/   pages for signed-in users: host, admin, account
+  components/
+    layout/      header, footer, nav, logo, site shell
+    ui/          shadcn components
+  features/      code grouped by feature: auth, host, admin, listings
+  lib/           auth, session, Prisma client, data access, validation
+prisma/          schema, seed
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Running locally
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+git clone https://github.com/oleksandr-vyshnevskyi/domek.git
+cd domek
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create `.env` with:
 
-## Learn More
+```
+DATABASE_URL=
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=http://localhost:3000
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+DEMO_PASSWORD=
+DEMO_GUEST_EMAIL=
+DEMO_HOST_EMAIL=
+DEMO_ADMIN_EMAIL=
+```
 
-To learn more about Next.js, take a look at the following resources:
+Then:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npx prisma migrate dev
+npx prisma db seed
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open http://localhost:3000.
 
-## Deploy on Vercel
+## Author
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Oleksandr Vyshnevskyi · [vyshnevsky.com](https://vyshnevsky.com) · [LinkedIn](https://www.linkedin.com/in/oleksandr-vyshnevskyi-dev)

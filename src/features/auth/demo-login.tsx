@@ -1,5 +1,5 @@
 import { signInAsDemo } from "@/features/auth/demo-actions";
-import { Button } from "@/components/ui/Button/button";
+import { Button } from "@/components/ui/button";
 
 export function DemoLogin() {
   return (

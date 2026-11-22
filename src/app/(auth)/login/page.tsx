@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { Button } from "@/components/ui/Button/button";
-import { Input } from "@/components/ui/Input/input";
-import { Label } from "@/components/ui/Label/label";
-import { GoogleButton } from "@/components/google-button";
-import { AuthDivider } from "@/components/auth-divider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { GoogleButton } from "@/features/auth/google-button";
+import { AuthDivider } from "@/features/auth/auth-divider";
 import { DemoLogin } from "@/features/auth/demo-login";
 
 const errors: Record<string, string> = {

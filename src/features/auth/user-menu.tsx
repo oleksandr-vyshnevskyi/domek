@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getSession } from "@/lib/session";
-import { UserDropdown } from "@/components/user-dropdown";
+import { UserDropdown } from "@/features/auth/user-dropdown";
 
 export async function UserMenu({ dark = false }: { dark?: boolean }) {
   const session = await getSession();
@@ -20,6 +20,14 @@ export async function UserMenu({ dark = false }: { dark?: boolean }) {
     );
   }
 
-  const { name, email, image } = session.user;
-  return <UserDropdown name={name} email={email} image={image ?? null} />;
+  const { name, email, image, isHost, role } = session.user;
+  return (
+    <UserDropdown
+      name={name}
+      email={email}
+      image={image ?? null}
+      isHost={Boolean(isHost)}
+      isAdmin={role === "ADMIN"}
+    />
+  );
 }

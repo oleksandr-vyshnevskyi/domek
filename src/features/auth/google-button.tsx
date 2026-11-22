@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { Button } from "@/components/ui/Button/button";
+import { Button } from "@/components/ui/button";
 
 export function GoogleButton({ label = "Kontynuuj z Google" }: { label?: string }) {
   const [pending, setPending] = useState(false);

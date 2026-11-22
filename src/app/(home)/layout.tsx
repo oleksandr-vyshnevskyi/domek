@@ -1,14 +1,5 @@
-import Header from '@/components/ui/Header/header'
-import Footer from '@/components/ui/Footer/footer'
+import SiteShell from "@/components/layout/site-shell";
 
 export default function HomeLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <Header dark/>
-      <main className="mx-auto w-full max-w-page px-4 sm:px-6 lg:px-8">
-  {children}
-</main>
-      <Footer />
-    </>
-  )
+  return <SiteShell dark>{children}</SiteShell>;
 }

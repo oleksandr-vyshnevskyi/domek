@@ -6,14 +6,14 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { listingSchema } from "@/lib/validations/listing";
 import { ListingStatus } from "@/generated/prisma/client";
-import { requireUser } from "@/lib/session";
+import { requireHost, requireUser } from "@/lib/session";
+
 export async function updateListing(
-  
   id: number,
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const user = await requireUser();
+  const user = await requireHost();
   const raw = Object.fromEntries(formData);
   const data = { ...raw, amenities: formData.getAll("amenities") };
   const result = listingSchema.safeParse(data);
@@ -53,7 +53,7 @@ export async function createListing(
   prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
-  const user = await requireUser();
+  const user = await requireHost();
   const raw = Object.fromEntries(formData);
   const data = { ...raw, amenities: formData.getAll("amenities") };
   const result = listingSchema.safeParse(data);
@@ -80,11 +80,18 @@ export async function createListing(
   redirect("/host");
 }
 export async function hideListing(id: number) {
-  const user = await requireUser()
+  const user = await requireHost();
   await prisma.listing.updateMany({
-  where: { id, ownerId: user.id },
+    where: { id, ownerId: user.id },
     data: { status: ListingStatus.HIDDEN },
   });
   revalidatePath("/host");
   revalidatePath("/search");
+}
+
+export async function becomeHost() {
+  const user = await requireUser();
+  await prisma.user.update({ where: { id: user.id }, data: { isHost: true } });
+  revalidatePath("/host");
+  redirect("/host");
 }

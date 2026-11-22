@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
-import ListingForm from "@/features/host/ListingForm";
+import ListingForm from "@/features/host/listing-form";
 import { updateListing } from "@/features/host/actions";
 import { getHostListingById } from "@/lib/data/listings";
 import { requireUser } from "@/lib/session";

@@ -14,9 +14,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type Props = { name: string; email: string; image: string | null };
+type Props = {
+  name: string;
+  email: string;
+  image: string | null;
+  isHost: boolean;
+  isAdmin: boolean;
+};
 
-export function UserDropdown({ name, email, image }: Props) {
+export function UserDropdown({ name, email, image, isHost, isAdmin }: Props) {
   const router = useRouter();
 
   async function signOut() {
@@ -49,6 +55,15 @@ export function UserDropdown({ name, email, image }: Props) {
         <DropdownMenuItem render={<Link href="/account/bookings" />}>
           Moje rezerwacje
         </DropdownMenuItem>
+        <DropdownMenuItem render={<Link href="/host" />}>
+          {isHost ? "Panel gospodarza" : "Zostań gospodarzem"}
+        </DropdownMenuItem>
+        {isAdmin && (
+          <DropdownMenuItem render={<Link href="/admin" />}>
+            Panel administratora
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={signOut}>Wyloguj się</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

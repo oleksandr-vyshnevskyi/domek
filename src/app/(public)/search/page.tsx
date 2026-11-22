@@ -1,4 +1,4 @@
-import ListingsList from "@/components/ui/List/ListingsList";
+import ListingsList from "@/features/listings/listings-list";
 import { Suspense } from "react";
 
 export default function SearchPage() {

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import ListingForm from "@/features/host/ListingForm";
+import ListingForm from "@/features/host/listing-form";
 import { createListing } from "@/features/host/actions";
 
 export default function NewListingPage() {

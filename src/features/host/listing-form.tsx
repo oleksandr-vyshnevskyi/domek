@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import type { ReactNode } from "react";
 import type { ActionState } from "@/features/host/actions";
 import { AMENITIES } from "@/lib/amenities";
-import { Button } from "@/components/ui/Button/button";
+import { Button } from "@/components/ui/button";
 
 const inputClass =
   "w-full rounded-xl border border-field bg-card px-3.5 py-3 text-base font-medium outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 aria-invalid:border-destructive";
