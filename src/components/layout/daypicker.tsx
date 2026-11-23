@@ -1,14 +1,12 @@
 "use client"
 /* eslint-disable react-hooks/rules-of-hooks */
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import { addDays, format, startOfMonth } from "date-fns";
-import { DateRange, DayPicker } from "@daypicker/react";
+import { DateRange, DayPicker , getDefaultClassNames} from "@daypicker/react";
 
 export default function dayPicker() {
-   const [range, setRange] = useState<DateRange>({
-    from: startOfMonth(new Date()),
-    to: addDays(startOfMonth(new Date()), 4),
-  });
+    const defaultClassNames = getDefaultClassNames();
+   const [range, setRange] = useState<DateRange>();
 
   let footer = `Please pick the first day.`;
   if (range?.from) {
@@ -19,10 +17,18 @@ export default function dayPicker() {
     }
   }
   return (
-    <DayPicker mode="range"
+    <DayPicker 
+    classNames={{
+        today: `border-amber-500`, 
+        selected: `bg-amber-500 border-amber-500 text-white`, 
+        root: `${defaultClassNames.root} shadow-lg p-5`, 
+        chevron: `${defaultClassNames.chevron} fill-amber-500`,
+       disabled: "opacity-50"
+      }}
+    mode="range"
       selected={range}
       onSelect={setRange}
       footer={footer}
-    disabled={{ before: new Date() }} required />
+    disabled={{ before: new Date() }} resetOnSelect  />
   );
 }
