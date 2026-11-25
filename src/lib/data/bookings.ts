@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { BookingStatus } from "@/generated/prisma/client";
+import { BookingStatus, Prisma } from "@/generated/prisma/client";
 
 export const ACTIVE_STATUSES = [BookingStatus.PENDING, BookingStatus.CONFIRMED];
 
@@ -16,4 +16,20 @@ export async function getBookedRanges(listingId: number) {
     select: { startDate: true, endDate: true },
     orderBy: { startDate: "asc" },
   });
+}
+export async function hasOverlap(
+  listingId: number,
+  startDate: Date,
+  endDate: Date,
+  db: Prisma.TransactionClient = prisma,
+) {
+  const count = await db.booking.count({
+    where: {
+      listingId,
+      status: { in: ACTIVE_STATUSES },
+      startDate: { lt: endDate },
+      endDate: { gt: startDate },
+    },
+  });
+  return count > 0;
 }
