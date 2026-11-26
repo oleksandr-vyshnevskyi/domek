@@ -1,9 +1,7 @@
 import { getListingById } from "@/lib/data/listings";
 import { getBookedRanges } from "@/lib/data/bookings";
+import { toDateString } from "@/lib/dates";
 
-function toDateString(date: Date) {
-  return date.toISOString().slice(0, 10);
-}
 
 export async function GET(
   _request: Request,
