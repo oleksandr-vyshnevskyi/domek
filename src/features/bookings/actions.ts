@@ -6,8 +6,8 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
 import { bookingSchema } from "@/lib/validations/booking";
-import { hasOverlap } from "@/lib/data/bookings";
-import { ListingStatus, Prisma } from "@/generated/prisma/client";
+import { ACTIVE_STATUSES, hasOverlap } from "@/lib/data/bookings";
+import { BookingStatus, ListingStatus, Prisma } from "@/generated/prisma/client";
 
 export type BookingState = {
   errors?: Record<string, string[] | undefined>;
@@ -90,4 +90,21 @@ export async function createBooking(
   revalidatePath("/account/bookings");
   revalidatePath(`/listings/${listingId}`);
   redirect("/account/bookings");
+}
+export async function cancelBooking(id: number) {
+  const user = await requireUser();
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
+
+  await prisma.booking.updateMany({
+    where: {
+      id,
+      guestId: user.id,
+      status: { in: ACTIVE_STATUSES },
+      startDate: { gt: today },
+    },
+    data: { status: BookingStatus.CANCELLED },
+  });
+
+  revalidatePath("/account/bookings");
 }

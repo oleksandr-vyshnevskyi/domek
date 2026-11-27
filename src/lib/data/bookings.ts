@@ -33,3 +33,12 @@ export async function hasOverlap(
   });
   return count > 0;
 }
+export async function getGuestBookings(guestId: string) {
+  return prisma.booking.findMany({
+    where: { guestId },
+    include: {
+      listing: { select: { id: true, title: true, city: true, images: true } },
+    },
+    orderBy: { startDate: "asc" },
+  });
+}

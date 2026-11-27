@@ -20,3 +20,11 @@ export function pluralNights(count: number) {
   if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) return "noce";
   return "nocy";
 }
+export function formatBookingDate(date: Date) {
+  return date.toLocaleDateString("pl-PL", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+}
